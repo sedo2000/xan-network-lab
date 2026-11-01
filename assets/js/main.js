@@ -1,0 +1,1 @@
+import {initNavigation} from './modules/navigation.js';import {initMotion} from './modules/motion.js';import {initLanguage} from './modules/language.js';import {initContact} from './modules/contact.js';initNavigation();initMotion();initLanguage();initContact();document.querySelectorAll('[data-year]').forEach(x=>x.textContent=new Date().getFullYear());
