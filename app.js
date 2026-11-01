@@ -1,98 +1,31 @@
-const $ = (s, root=document) => root.querySelector(s);
-const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-$('#year').textContent = new Date().getFullYear();
-
-$('#menuToggle').addEventListener('click', () => $('.desktop-nav').classList.toggle('open'));
-$$('.desktop-nav a').forEach(a => a.addEventListener('click', () => $('.desktop-nav').classList.remove('open')));
-
-$('#themeToggle').addEventListener('click', () => {
-  document.body.classList.toggle('light-theme');
-  $('#themeGlyph').textContent = document.body.classList.contains('light-theme') ? '☾' : '☼';
-});
-
-const translations = {
-  navAbout:'من أنا',navExpertise:'الخبرات',navWork:'المشاريع',navTools:'أدوات الشبكات',navContact:'تواصل',
-  letsTalk:'لنتحدث',available:'هندسة البنية التحتية الرقمية',heroKicker:'الشبكات · الأنظمة · البرمجيات',
-  heroHi:'أبني',heroFuture:'ما يربط',heroWorld:'العالم.',heroLead:'أصمم معماريات شبكات مرنة وأطوّر برمجيات تجعل البنية التحتية المعقدة أكثر بساطة.',
-  exploreWork:'استكشف الأعمال',years:'سنوات من الخبرة',stack:'تقنيات أساسية',curiosity:'فضول لا محدود',
-  aboutTitle:'هندسة <span class="gradient-text">بهدف.</span>',aboutNote:'عقلية عملية، ورؤية شمولية للأنظمة، وشغف دائم بفهم ما يحدث خلف الواجهات.',
-  aboutText:'أعمل في هندسة الشبكات والأنظمة المعزولة والبنية التحتية السحابية وتطوير التطبيقات. أركز على بناء أنظمة يمكن الاعتماد عليها، من مسارات الحزم والأتمتة إلى الواجهات المفيدة والواضحة.',
-  principleOne:'فكّر بمنظومة كاملة.',principleOneText:'افهم المعمارية بالكامل، وليس الجزء الذي أمامك فقط.',principleTwo:'صمّم للاعتمادية.',principleTwoText:'اجعل الأداء والمراقبة والموثوقية جزءاً من التصميم.',
-  expertiseTitle:'ترسانة <span class="gradient-text">التقنيات.</span>',expertiseNote:'مجموعة أدوات متعددة التخصصات لتصميم البنية التحتية الحديثة وأتمتتها وتشغيلها.',
-  networkDesc:'تصميم الشبكات والتوجيه والطبقات الافتراضية ومعالجة الحزم عالية الأداء.',systemsDesc:'بيئات لينكس، والبنية التحتية ككود، وأتمتة العمليات.',softwareDesc:'خدمات خلفية وواجهات API وتطبيقات عملية لحل مشكلات حقيقية.',qualityDesc:'سير عمل قابل للتكرار واختبارات ومراقبة لضمان التسليم الموثوق.',
-  workTitle:'من الأفكار إلى <span class="gradient-text">الأنظمة.</span>',workNote:'مجالات هندسية ونماذج أعمال أولية. يمكن استبدالها بدراسات حالة لمشاريع منشورة عند توفرها.',
-  workNetwork:'تصميم هياكل شبكات قابلة للتوسع، وشبكات Overlay، وأنماط اتصال موثوقة.',workAutomation:'تحويل المهام التشغيلية المتكررة إلى إجراءات موثقة وقابلة للإصدار.',workSoftware:'بناء أدوات وخدمات مركزة تجعل سير العمل التقني أسهل.',
-  toolsTitle:'أدوات <span class="gradient-text">الشبكات الميدانية.</span>',toolsNote:'أدوات بسيطة تعمل من المتصفح للفحوصات السريعة. تعتمد النتائج على شبكتك والخدمات العامة المستخدمة.',
-  contactTitle:'لديك مشكلة<br><span class="gradient-text">معقدة تحتاج حلاً؟</span>',contactText:'لنتحدث عن هندسة الشبكات أو البنية التحتية أو الأتمتة أو المنتج الذي تعمل على بنائه.',
-  rights:'صُنع بفضول ودقة.'
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+$('#year').textContent=new Date().getFullYear();
+const nodeData={
+ edge:{id:'01',kicker:'INGRESS / EDGE LAYER',title:'The edge',text:'The first point of contact. This is where requests arrive, get filtered and are routed toward the right service. A good edge reduces unnecessary work before it reaches the core.',role:'Entry, filtering & routing',risk:'Untrusted traffic / bottlenecks',links:'Core · Security'},
+ core:{id:'02',kicker:'CONTROL PLANE',title:'Core logic',text:'The decision layer coordinates traffic, identity and service behaviour. It should be predictable, observable and deliberately boring.',role:'Policy & orchestration',risk:'Single points of failure',links:'Edge · Data · Ops'},
+ data:{id:'03',kicker:'STATE / DATA LAYER',title:'The memory',text:'State makes a service useful across time. Data design is about consistency, recovery and knowing what can be rebuilt when a dependency disappears.',role:'Persistence & recovery',risk:'Data loss / stale state',links:'Core · Backups'},
+ ops:{id:'04',kicker:'OBSERVABILITY LAYER',title:'The signal',text:'Metrics, logs and traces turn invisible behaviour into evidence. The goal is not more dashboards — it is faster, calmer decisions when reality gets messy.',role:'Telemetry & diagnosis',risk:'Blind spots / alert fatigue',links:'Edge · Core · Data'}
 };
-let isArabic = false;
-const originalContent = new Map();
-$$('[data-i18n]').forEach(el => originalContent.set(el, el.innerHTML));
-$('#langToggle').addEventListener('click', () => {
-  isArabic = !isArabic;
-  document.documentElement.lang = isArabic ? 'ar' : 'en';
-  document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
-  $('#langToggle').textContent = isArabic ? 'EN' : 'عربي';
-  $$('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
-    el.innerHTML = isArabic && translations[key] ? translations[key] : originalContent.get(el);
-  });
-});
-
-const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-  if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
-}), {threshold:.12});
-$$('.reveal').forEach(el => observer.observe(el));
-
-const toolTitles = {ip:'IP Intelligence',dns:'DNS Lookup',latency:'Latency Check'};
-$$('.tool-tab').forEach(tab => tab.addEventListener('click', () => {
-  $$('.tool-tab').forEach(t => {t.classList.remove('active');t.setAttribute('aria-selected','false')});
-  tab.classList.add('active');tab.setAttribute('aria-selected','true');
-  $$('.tool-pane').forEach(p => p.classList.remove('active'));
-  $('#pane-'+tab.dataset.tool).classList.add('active');
-  $('#toolTitle').textContent = toolTitles[tab.dataset.tool];
+$$('.map-node').forEach(btn=>btn.addEventListener('click',()=>{
+ $$('.map-node').forEach(n=>n.classList.remove('selected'));btn.classList.add('selected');
+ const d=nodeData[btn.dataset.node];$('#inspectId').textContent=d.id;$('#inspectKicker').textContent=d.kicker;$('#inspectTitle').textContent=d.title;$('#inspectText').textContent=d.text;$('#inspectRole').textContent=d.role;$('#inspectRisk').textContent=d.risk;$('#inspectLinks').textContent=d.links;
 }));
-function showLoading(el, message='QUERYING PUBLIC SERVICE…') { el.innerHTML = `<span class="output-placeholder">${message}</span>`; }
-function showError(el, message) { el.textContent = 'ERROR / ' + message; }
-function safe(v) { return String(v ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function resultRows(items) {
-  return `<div class="result-grid">${items.map(([k,v])=>`<div class="result-item"><small>${safe(k)}</small><strong>${safe(v)}</strong></div>`).join('')}</div>`;
-}
-$('#ipRun').addEventListener('click', async () => {
-  const out=$('#ipOutput'), ip=$('#ipInput').value.trim();
-  if (ip && !/^[0-9a-fA-F:.]+$/.test(ip)) return showError(out,'Enter a valid IPv4 or IPv6 address.');
-  showLoading(out);
-  try {
-    const url = ip ? `https://ipapi.co/${encodeURIComponent(ip)}/json/` : 'https://ipapi.co/json/';
-    const r=await fetch(url); if(!r.ok) throw new Error('IP service returned '+r.status);
-    const d=await r.json(); if(d.error) throw new Error(d.reason || 'Lookup failed');
-    out.innerHTML=resultRows([['IP ADDRESS',d.ip],['VERSION',d.version],['CITY',d.city],['REGION',d.region],['COUNTRY',d.country_name],['ISP / ORG',d.org],['ASN',d.asn],['TIMEZONE',d.timezone]]);
-  } catch(e) { showError(out,e.message+' — the service may be unavailable or rate-limited.'); }
-});
-$('#dnsRun').addEventListener('click', async () => {
-  const out=$('#dnsOutput'), domain=$('#dnsInput').value.trim().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
-  const type=$('#dnsType').value;
-  if(!domain || !/^(?=.{1,253}$)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(\.([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*$/.test(domain)) return showError(out,'Enter a valid domain name.');
-  showLoading(out);
-  try {
-    const r=await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=${type}`,{headers:{accept:'application/dns-json'}});
-    if(!r.ok) throw new Error('DNS service returned '+r.status);
-    const d=await r.json();
-    const answers=d.Answer||[];
-    if(!answers.length) { out.textContent=`NO ANSWER / ${domain} / ${type} / status ${d.Status}`; return; }
-    out.innerHTML=`<div class="result-item"><small>DOMAIN / TYPE / ANSWERS</small><strong>${safe(domain)} · ${type} · ${answers.length}</strong></div><div style="margin-top:12px;display:grid;gap:8px">${answers.map(a=>`<div style="padding:9px;background:#101d2d;border-radius:5px"><small style="color:#7d94ac">${safe(a.name)} · TTL ${safe(a.TTL)}</small><div>${safe(a.data)}</div></div>`).join('')}</div>`;
-  } catch(e) { showError(out,e.message+' — check your connection and try again.'); }
-});
-$('#latencyRun').addEventListener('click', async () => {
-  const out=$('#latencyOutput'), url=$('#latencyTarget').value;
-  showLoading(out,'MEASURING ROUND-TRIP REQUEST TIME…');
-  try {
-    const start=performance.now();
-    await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now(),{mode:'no-cors',cache:'no-store'});
-    const ms=Math.round(performance.now()-start);
-    out.innerHTML=resultRows([['ROUND-TRIP TIME',`${ms} ms`],['TARGET',new URL(url).hostname],['METHOD','Browser fetch'],['NOTE','Not ICMP ping']]);
-  } catch(e) { showError(out,'Request failed or blocked by the browser/network.'); }
-});
-$('#ipInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#ipRun').click()});
-$('#dnsInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#dnsRun').click()});
+function ipToInt(ip){const p=ip.split('.');if(p.length!==4||p.some(x=>!/^(0|[1-9]\d{0,2})$/.test(x)||+x>255))throw Error('Enter a valid IPv4 address.');return p.reduce((n,x)=>((n*256)+Number(x))>>>0,0)}
+function intToIp(n){return [n>>>24,(n>>>16)&255,(n>>>8)&255,n&255].join('.')}
+function subnet(){const ip=$('#ipAddress').value.trim(),bits=Number($('#cidr').value),out=$('#subnetResults');try{const n=ipToInt(ip),mask=bits===0?0:(0xffffffff<<(32-bits))>>>0,network=(n&mask)>>>0,broadcast=(network|(~mask>>>0))>>>0,hosts=bits>=31?(bits===31?2:1):Math.pow(2,32-bits)-2,first=bits>=31?network:network+1,last=bits>=31?broadcast:broadcast-1;const maskText=intToIp(mask);const rows=[['NETWORK',intToIp(network)],['USABLE RANGE',bits===32?intToIp(network):intToIp(first)+' — '+intToIp(last)],['BROADCAST',intToIp(broadcast)],['USABLE HOSTS',hosts.toLocaleString()],['SUBNET MASK',maskText]];out.innerHTML=rows.map(([a,b])=>'<div><span>'+a+'</span><b>'+b+'</b></div>').join('')}catch(e){out.innerHTML='<div><span>INPUT ERROR</span><b>'+e.message+'</b></div>'}}
+$('#subnetRun').addEventListener('click',subnet);$('#ipAddress').addEventListener('keydown',e=>{if(e.key==='Enter')subnet()});$('#cidr').addEventListener('change',subnet);
+let components=[],nextId=1;
+const positions={client:[12,25],router:[42,12],server:[67,25],database:[42,67]};
+function drawTopology(){const stage=$('#topologyStage'),svg=$('#topologySvg');$$('.topology-node',stage).forEach(n=>n.remove());svg.innerHTML='';$('#topologyEmpty').style.display=components.length?'none':'grid';components.forEach((c,i)=>{const pos=positions[c.type],x=pos[0]+(i%2)*4,y=pos[1]+Math.floor(i/2)*8;c.x=Math.min(x,83);c.y=Math.min(y,78);const el=document.createElement('div');el.className='topology-node';el.style.left=c.x+'%';el.style.top=c.y+'%';el.innerHTML=c.type.toUpperCase()+'<small>#'+c.id+'</small>';stage.appendChild(el);if(i){const prev=components[i-1],line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',(prev.x+4)+'%');line.setAttribute('y1',(prev.y+5)+'%');line.setAttribute('x2',(c.x+4)+'%');line.setAttribute('y2',(c.y+5)+'%');svg.appendChild(line)}});$('#topologyStatus').textContent=components.length+' COMPONENTS / LOCAL ONLY'}
+$$('[data-add]').forEach(b=>b.addEventListener('click',()=>{if(components.length>=8){toast('Maximum 8 components in this sketch.');return}components.push({id:nextId++,type:b.dataset.add});drawTopology()}));
+$('#exportTopology').addEventListener('click',()=>{if(!components.length){toast('Add at least one component first.');return}const data={name:'XAN topology sketch',created:new Date().toISOString(),components:components.map(c=>({id:c.id,type:c.type})),connections:components.slice(1).map((c,i)=>({from:components[i].id,to:c.id}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='xan-topology.json';a.click();URL.revokeObjectURL(a.href);toast('Topology exported as JSON.')});
+function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2300)}
+$('#signalRun').addEventListener('click',async()=>{const selected=$$('.signal-targets input:checked').map(i=>i.value),out=$('#signalResults');if(!selected.length){out.textContent='SELECT AT LEAST ONE ENDPOINT';return}out.textContent='RUNNING TESTS…';const results=await Promise.all(selected.map(async url=>{const start=performance.now();try{await fetch(url+(url.includes('?')?'&':'?')+'xan='+Date.now(),{mode:'no-cors',cache:'no-store'});return {name:new URL(url).hostname,ms:Math.round(performance.now()-start),ok:true}}catch{return {name:new URL(url).hostname,ms:null,ok:false}}}));out.innerHTML=results.map(r=>'<div class="signal-result"><span>'+r.name+'</span><b>'+(r.ok?r.ms+' ms':'BLOCKED / FAILED')+'</b></div>').join('')+'<p style="font:7px var(--mono);line-height:1.7">Browser request timing only. Results vary by cache, routing and browser policy; not ICMP latency.</p>'});
+const overlay=$('#commandOverlay'),cmdInput=$('#commandInput');function openCommand(){overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');cmdInput.value='';filterCommands();cmdInput.focus()}function closeCommand(){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true')}
+$('#commandOpen').addEventListener('click',openCommand);$('#commandClose').addEventListener('click',closeCommand);overlay.addEventListener('click',e=>{if(e.target===overlay)closeCommand()});
+function filterCommands(){const q=cmdInput.value.toLowerCase();$$('#commandItems button').forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(q))}
+cmdInput.addEventListener('input',filterCommands);$$('#commandItems button').forEach(b=>b.addEventListener('click',()=>{location.hash=b.dataset.go;closeCommand()}));
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCommand()}if(e.key==='Escape')closeCommand()});
+const ar={Manifesto:'الفكرة', 'System map':'خريطة النظام',Lab:'المختبر','Field notes':'ملاحظات','OPEN TO INTERESTING PROBLEMS':'متاح للمشاريع المثيرة','INDEPENDENT DIGITAL ENGINEERING':'هندسة رقمية مستقلة','NETWORKS · SYSTEMS · SOFTWARE':'الشبكات · الأنظمة · البرمجيات','Make':'اجعل','complexity':'التعقيد','make sense.':'مفهوماً.','Enter the lab':'ادخل المختبر','Get to know the thinking':'اكتشف طريقة التفكير','THE POINT OF VIEW':'وجهة النظر','Everything':'كل شيء','is':'مترابط','connected.':'معاً.','THE EXPERIMENT ROOM':'غرفة التجارب','Try it.':'جرّب.','Break it.':'اختبره.','Understand it.':'افهمه.','HAVE A GOOD PROBLEM?':'لديك تحدٍ جيد؟','Let's make':'لنصنع','something matter.':'شيئاً له معنى.'};
+let arabic=false;$('#language').addEventListener('click',()=>{arabic=!arabic;document.documentElement.lang=arabic?'ar':'en';document.documentElement.dir=arabic?'rtl':'ltr';$('#language').textContent=arabic?'EN':'عربي';$$('.main-nav a').forEach(a=>{const k=a.textContent.trim();if(ar[k])a.textContent=arabic?ar[k]:({'الفكرة':'Manifesto','خريطة النظام':'System map','المختبر':'Lab','ملاحظات':'Field notes'}[k]||k)});$$('.overline,.hero-topline span,.hero-cta .pill-link,.hero-cta .under-link,.section-marker span,.hero h1,.system-heading h2,.lab-heading h2,.contact h2').forEach(el=>{if(!el.dataset.en)el.dataset.en=el.innerHTML;const raw=el.textContent.trim();if(arabic&&ar[raw])el.innerHTML=ar[raw];else if(!arabic)el.innerHTML=el.dataset.en})});
+subnet();drawTopology();
